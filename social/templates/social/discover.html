@@ -1,0 +1,38 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Discover - SnapSocial{% endblock %}
+
+{% block content %}
+<div class="discover-container">
+    <h1 class="page-title">Discover People</h1>
+    <p class="page-subtitle">Find friends and start following</p>
+
+    <div class="users-grid">
+        {% for u in users %}
+        <div class="user-card">
+            <a href="{% url 'profile' u.username %}" class="user-card-link">
+                <div class="avatar avatar-lg story-ring-inline">
+                    {% if u.profile.avatar %}
+                        <img src="{{ u.profile.avatar.url }}" alt="{{ u.username }}">
+                    {% else %}
+                        <span>{{ u.username|first|upper }}</span>
+                    {% endif %}
+                </div>
+                <span class="user-card-name">{{ u.username }}</span>
+                <span class="user-card-followers">{{ u.follower_count }} followers</span>
+            </a>
+            <form method="post" action="{% url 'toggle_follow' u.username %}" class="follow-form">
+                {% csrf_token %}
+                <button type="submit" class="snap-btn snap-btn-sm {% if u.is_following %}snap-btn-outline{% else %}snap-btn-primary{% endif %}">
+                    {% if u.is_following %}Following{% else %}Follow{% endif %}
+                </button>
+            </form>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <p>No users to discover yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

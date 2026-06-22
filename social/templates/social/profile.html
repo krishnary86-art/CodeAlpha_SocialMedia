@@ -1,0 +1,65 @@
+{% extends 'social/base.html' %}
+
+{% block title %}{{ profile_user.username }} - SnapSocial{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar-wrap">
+            <div class="avatar avatar-xl story-ring-large">
+                {% if profile_user.profile.avatar %}
+                    <img src="{{ profile_user.profile.avatar.url }}" alt="{{ profile_user.username }}">
+                {% else %}
+                    <span>{{ profile_user.username|first|upper }}</span>
+                {% endif %}
+            </div>
+        </div>
+
+        <h1 class="profile-username">{{ profile_user.username }}</h1>
+        {% if profile_user.profile.bio %}
+        <p class="profile-bio">{{ profile_user.profile.bio }}</p>
+        {% endif %}
+
+        <div class="profile-stats">
+            <div class="stat">
+                <span class="stat-value">{{ profile_user.profile.post_count }}</span>
+                <span class="stat-label">Snaps</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value follower-count">{{ profile_user.profile.follower_count }}</span>
+                <span class="stat-label">Followers</span>
+            </div>
+            <div class="stat">
+                <span class="stat-value">{{ profile_user.profile.following_count }}</span>
+                <span class="stat-label">Following</span>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            {% if is_own_profile %}
+            <a href="{% url 'edit_profile' %}" class="snap-btn snap-btn-outline">Edit Profile</a>
+            <a href="{% url 'create_post' %}" class="snap-btn snap-btn-primary">New Snap</a>
+            {% else %}
+            <form method="post" action="{% url 'toggle_follow' profile_user.username %}" class="follow-form">
+                {% csrf_token %}
+                <button type="submit" class="snap-btn {% if is_following %}snap-btn-outline{% else %}snap-btn-primary{% endif %} follow-btn">
+                    {% if is_following %}Following{% else %}Follow{% endif %}
+                </button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="profile-posts">
+        <h2 class="section-title">Snaps</h2>
+        {% for post in posts %}
+        {% include 'social/partials/post_card.html' with post=post %}
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <p>No snaps posted yet.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

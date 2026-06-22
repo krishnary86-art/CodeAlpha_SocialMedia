@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}SnapChat Social{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="app-container">
+        {% if user.is_authenticated %}
+        <header class="top-bar">
+            <a href="{% url 'home' %}" class="logo">
+                <span class="ghost-icon">👻</span>
+                <span class="logo-text">SnapSocial</span>
+            </a>
+            <div class="top-actions">
+                <a href="{% url 'discover' %}" class="icon-btn" title="Discover">🔍</a>
+                <a href="{% url 'profile' user.username %}" class="avatar-link">
+                    <div class="avatar avatar-sm">
+                        {% if user.profile.avatar %}
+                            <img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}">
+                        {% else %}
+                            <span>{{ user.username|first|upper }}</span>
+                        {% endif %}
+                    </div>
+                </a>
+            </div>
+        </header>
+        {% endif %}
+
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="snap-message snap-message-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <main class="main-content {% if not user.is_authenticated %}auth-page{% endif %}">
+            {% block content %}{% endblock %}
+        </main>
+
+        {% if user.is_authenticated %}
+        <nav class="bottom-nav">
+            <a href="{% url 'home' %}" class="nav-item {% if request.resolver_match.url_name == 'home' %}active{% endif %}">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </a>
+            <a href="{% url 'discover' %}" class="nav-item {% if request.resolver_match.url_name == 'discover' %}active{% endif %}">
+                <span class="nav-icon">🌐</span>
+                <span class="nav-label">Discover</span>
+            </a>
+            <a href="{% url 'create_post' %}" class="nav-item nav-create">
+                <span class="create-btn">+</span>
+            </a>
+            <a href="{% url 'profile' user.username %}" class="nav-item {% if request.resolver_match.url_name == 'profile' %}active{% endif %}">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </a>
+            <a href="{% url 'logout' %}" class="nav-item">
+                <span class="nav-icon">🚪</span>
+                <span class="nav-label">Logout</span>
+            </a>
+        </nav>
+        {% endif %}
+    </div>
+
+    <script src="{% static 'js/main.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

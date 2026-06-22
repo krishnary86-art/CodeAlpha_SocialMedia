@@ -1,0 +1,27 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Edit Profile - SnapSocial{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-card">
+        <h1 class="form-title">Edit Profile</h1>
+
+        <form method="post" enctype="multipart/form-data" class="auth-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="field-errors">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="snap-btn snap-btn-primary snap-btn-full">Save Changes</button>
+            <a href="{% url 'profile' user.username %}" class="snap-btn snap-btn-outline snap-btn-full">Cancel</a>
+        </form>
+    </div>
+</div>
+{% endblock %}

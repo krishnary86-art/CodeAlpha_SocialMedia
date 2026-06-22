@@ -1,0 +1,28 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Create Snap - SnapSocial{% endblock %}
+
+{% block content %}
+<div class="form-page">
+    <div class="form-card">
+        <div class="form-header-icon">📸</div>
+        <h1 class="form-title">Create a Snap</h1>
+        <p class="form-subtitle">Share a moment with your friends</p>
+
+        <form method="post" enctype="multipart/form-data" class="auth-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <div class="form-group">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <div class="field-errors">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="snap-btn snap-btn-primary snap-btn-full">Post Snap</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'social/base.html' %}
+
+{% block title %}Log In - SnapSocial{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="auth-logo">👻</div>
+        <h1 class="auth-title">Welcome Back</h1>
+        <p class="auth-subtitle">Log in to continue snapping</p>
+
+        <form method="post" class="auth-form">
+            {% csrf_token %}
+            {% if form.non_field_errors %}
+            <div class="form-errors">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                <input type="text" name="username" id="id_username" class="snap-input" required autofocus>
+            </div>
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                <input type="password" name="password" id="id_password" class="snap-input" required>
+            </div>
+
+            <button type="submit" class="snap-btn snap-btn-primary snap-btn-full">Log In</button>
+        </form>
+
+        <p class="auth-switch">
+            Don't have an account? <a href="{% url 'register' %}">Sign Up</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

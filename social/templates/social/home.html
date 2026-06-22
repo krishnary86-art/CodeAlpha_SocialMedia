@@ -1,0 +1,57 @@
+{% extends 'social/base.html' %}
+
+{% block content %}
+<div class="feed-container">
+    {% if user.is_authenticated %}
+    <div class="stories-row">
+        <a href="{% url 'create_post' %}" class="story-item story-add">
+            <div class="story-ring">
+                <div class="story-avatar add-avatar">+</div>
+            </div>
+            <span class="story-name">Your Snap</span>
+        </a>
+        {% for post in posts|slice:":8" %}
+        <a href="{% url 'profile' post.author.username %}" class="story-item">
+            <div class="story-ring {% if post.author == user %}viewed{% endif %}">
+                <div class="story-avatar">
+                    {% if post.author.profile.avatar %}
+                        <img src="{{ post.author.profile.avatar.url }}" alt="{{ post.author.username }}">
+                    {% else %}
+                        <span>{{ post.author.username|first|upper }}</span>
+                    {% endif %}
+                </div>
+            </div>
+            <span class="story-name">{{ post.author.username|truncatechars:8 }}</span>
+        </a>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="hero-section">
+        <div class="hero-ghost">👻</div>
+        <h1 class="hero-title">SnapSocial</h1>
+        <p class="hero-subtitle">Share moments. Follow friends. Stay connected.</p>
+        <div class="hero-actions">
+            <a href="{% url 'register' %}" class="snap-btn snap-btn-primary">Sign Up</a>
+            <a href="{% url 'login' %}" class="snap-btn snap-btn-outline">Log In</a>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="posts-feed">
+        {% for post in posts %}
+        {% include 'social/partials/post_card.html' with post=post %}
+        {% empty %}
+        <div class="empty-state">
+            <div class="empty-icon">📸</div>
+            <h3>No snaps yet!</h3>
+            {% if user.is_authenticated %}
+            <p>Follow people or create your first snap.</p>
+            <a href="{% url 'create_post' %}" class="snap-btn snap-btn-primary">Create Snap</a>
+            {% else %}
+            <p>Sign up to start sharing moments.</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
